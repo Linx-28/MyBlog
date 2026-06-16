@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>关于我 - 我的博客</title>
+  <!-- 固定浅色模式 -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+  <link rel="stylesheet" href="/css/style.css">
+</head>
+<body>
+
+  <header class="site-header">
+    <div class="max-w-6xl mx-auto px-4 h-full flex items-center justify-between">
+      <a href="/" class="text-xl font-bold gradient-text no-underline">MyBlog</a>
+      <nav class="hidden md:flex items-center gap-1">
+        <a href="/" class="nav-link"><i class="fas fa-home mr-1"></i>首页</a>
+        <a href="/news-list.html" class="nav-link"><i class="fas fa-newspaper mr-1"></i>新闻</a>
+        <a href="/about.html" class="nav-link active"><i class="fas fa-user mr-1"></i>关于</a>
+        <a href="/admin/posts.html" class="nav-link"><i class="fas fa-cog mr-1"></i>管理</a>
+      </nav>
+      <div class="flex items-center gap-3">
+        <button class="mobile-menu-btn md:hidden text-xl p-2"><i class="fas fa-bars"></i></button>
+      </div>
+    </div>
+  </header>
+
+  <div class="mobile-menu" id="mobileMenu">
+    <a href="/"><i class="fas fa-home mr-2"></i>首页</a>
+    <a href="/news-list.html"><i class="fas fa-newspaper mr-2"></i>新闻</a>
+    <a href="/about.html"><i class="fas fa-user mr-2"></i>关于</a>
+    <a href="/admin/posts.html"><i class="fas fa-cog mr-2"></i>管理</a>
+  </div>
+
+  <main class="max-w-4xl mx-auto px-4 py-6">
+
+    <div class="card p-6 md:p-8 mb-6">
+      <div class="flex flex-col sm:flex-row items-center sm:items-start gap-6">
+        <div class="relative shrink-0">
+          <div id="avatar-fallback"
+               class="w-28 h-28 rounded-full bg-gradient-to-br from-blue-400 to-purple-500
+                      flex items-center justify-center text-white text-4xl font-bold border-4 border-blue-100 dark:border-blue-900">
+            <i class="fas fa-user"></i>
+          </div>
+          <img src="/images/头像.jpg" alt="个人头像"
+               class="w-28 h-28 rounded-full object-cover border-4 border-blue-100 dark:border-blue-900 absolute inset-0"
+               onerror="this.remove()"
+               onload="this.classList.remove('absolute','inset-0');document.getElementById('avatar-fallback').classList.add('hidden')">
+        </div>
+        <div class="text-center sm:text-left">
+          <h1 class="text-3xl font-bold mb-2">关于我</h1>
+          <p class="text-gray-500 dark:text-black-400 mb-3">全栈开发者 / 技术爱好者</p>
+          <p class="text-gray-600 dark:text-black-300 leading-relaxed">
+            热爱编程和技术分享，专注于 Web 开发、全栈技术和自动化爬虫等领域。
+            这个博客记录了我在技术路上的学习笔记和实践经验，以及自动聚合的新闻资讯。
+          </p>
+        </div>
+      </div>
+    </div>
+
+    <div class="card p-6 md:p-8 mb-6">
+      <h2 class="text-2xl font-bold mb-6 flex items-center gap-2">
+        <i class="fas fa-code text-blue-500"></i> 技能展示
+      </h2>
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
+        <div>
+          <div class="flex justify-between mb-1 text-sm">
+            <span class="font-medium">JavaScript / TypeScript</span>
+            <span class="text-gray-400">90%</span>
+          </div>
+          <div class="skill-bar"><div class="skill-bar-fill" style="width:90%"></div></div>
+        </div>
+        <div>
+          <div class="flex justify-between mb-1 text-sm">
+            <span class="font-medium">Node.js / Express</span>
+            <span class="text-gray-400">85%</span>
+          </div>
+          <div class="skill-bar"><div class="skill-bar-fill" style="width:85%"></div></div>
+        </div>
+        <div>
+          <div class="flex justify-between mb-1 text-sm">
+            <span class="font-medium">HTML5 / CSS3 / Tailwind</span>
+            <span class="text-gray-400">92%</span>
+          </div>
+          <div class="skill-bar"><div class="skill-bar-fill" style="width:92%"></div></div>
+        </div>
+        <div>
+          <div class="flex justify-between mb-1 text-sm">
+            <span class="font-medium">Python</span>
+            <span class="text-gray-400">75%</span>
+          </div>
+          <div class="skill-bar"><div class="skill-bar-fill" style="width:75%"></div></div>
+        </div>
+        <div>
+          <div class="flex justify-between mb-1 text-sm">
+            <span class="font-medium">SQL / 数据库</span>
+            <span class="text-gray-400">80%</span>
+          </div>
+          <div class="skill-bar"><div class="skill-bar-fill" style="width:80%"></div></div>
+        </div>
+        <div>
+          <div class="flex justify-between mb-1 text-sm">
+            <span class="font-medium">Git / Linux</span>
+            <span class="text-gray-400">82%</span>
+          </div>
+          <div class="skill-bar"><div class="skill-bar-fill" style="width:82%"></div></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="card p-6 md:p-8">
+      <h2 class="text-2xl font-bold mb-6 flex items-center gap-2">
+        <i class="fas fa-envelope text-blue-500"></i> 联系方式
+      </h2>
+      <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+        <a href="https://mail.163.com/" class="contact-link">
+          <img src="/images/网易邮箱图标.PNG" alt="网易邮箱" class="w-6 h-6 object-contain">
+          <div>
+            <div class="text-sm font-medium text-black">网易邮箱</div>
+            <div class="text-sm text-gray-400">******</div>
+          </div>
+        </a>
+        <a href="https://github.com" target="_blank" class="contact-link">
+          <i class="fab fa-github text-xl"></i>
+          <div>
+            <div class="text-sm font-medium">GitHub</div>
+            <div class="text-sm text-gray-400">******</div>
+          </div>
+        </a>
+        <a href="https://weixin.qq.com" target="_blank" class="contact-link">
+          <i class="fab fa-weixin text-green-500 text-xl"></i>
+          <div>
+            <div class="text-sm font-medium">微信</div>
+            <div class="text-sm text-gray-400">******</div>
+          </div>
+        </a>
+        <a href="https://qm.qq.com/cgi-bin/qm/qr?k=yourQQ" target="_blank" class="contact-link">
+          <i class="fab fa-qq text-[#12b7f5] text-xl"></i>
+          <div>
+            <div class="text-sm font-medium">QQ</div>
+            <div class="text-sm text-gray-400">******</div>
+          </div>
+        </a>
+      </div>
+    </div>
+
+  </main>
+
+  <footer class="site-footer">
+    <div class="max-w-6xl mx-auto px-4">
+      <p>&copy; 2024 MyBlog. Made with passion.</p>
+    </div>
+  </footer>
+
+  <script src="/js/main.js"></script>
+  <script>
+    document.addEventListener('DOMContentLoaded', function() {
+      initTheme();
+      initMobileMenu();
+    });
+  </script>
+</body>
+</html>

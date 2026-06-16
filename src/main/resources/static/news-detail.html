@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>新闻详情 - 我的博客</title>
+  <!-- 固定浅色模式 -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+  <link rel="stylesheet" href="/css/style.css">
+</head>
+<body>
+
+  <header class="site-header">
+    <div class="max-w-6xl mx-auto px-4 h-full flex items-center justify-between">
+      <a href="/" class="text-xl font-bold gradient-text no-underline">MyBlog</a>
+      <nav class="hidden md:flex items-center gap-1">
+        <a href="/" class="nav-link"><i class="fas fa-home mr-1"></i>首页</a>
+        <a href="/news-list.html" class="nav-link"><i class="fas fa-newspaper mr-1"></i>新闻</a>
+        <a href="/about.html" class="nav-link"><i class="fas fa-user mr-1"></i>关于</a>
+        <a href="/admin/posts.html" class="nav-link"><i class="fas fa-cog mr-1"></i>管理</a>
+      </nav>
+      <div class="flex items-center gap-3">
+        <button class="mobile-menu-btn md:hidden text-xl p-2"><i class="fas fa-bars"></i></button>
+      </div>
+    </div>
+  </header>
+
+  <div class="mobile-menu" id="mobileMenu">
+    <a href="/"><i class="fas fa-home mr-2"></i>首页</a>
+    <a href="/news-list.html"><i class="fas fa-newspaper mr-2"></i>新闻</a>
+    <a href="/about.html"><i class="fas fa-user mr-2"></i>关于</a>
+    <a href="/admin/posts.html"><i class="fas fa-cog mr-2"></i>管理</a>
+  </div>
+
+  <main class="max-w-4xl mx-auto px-4 py-6">
+    <div id="newsDetail">
+      <div class="flex justify-center py-20"><div class="spinner"></div></div>
+    </div>
+  </main>
+
+  <footer class="site-footer">
+    <div class="max-w-6xl mx-auto px-4">
+      <p>&copy; 2024 MyBlog. News from public sources.</p>
+    </div>
+  </footer>
+
+  <script src="/js/main.js"></script>
+  <script>
+    document.addEventListener('DOMContentLoaded', function() {
+      initTheme();
+      initMobileMenu();
+      loadNewsDetail();
+    });
+  </script>
+</body>
+</html>

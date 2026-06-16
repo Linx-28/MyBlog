@@ -1,0 +1,208 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>文章管理 - 管理后台</title>
+  <!-- 固定浅色模式 -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+  <link rel="stylesheet" href="/css/style.css">
+</head>
+<body>
+
+  <!-- 顶部导航 -->
+  <header class="site-header">
+    <div class="max-w-6xl mx-auto px-4 h-full flex items-center justify-between">
+      <a href="/" class="text-xl font-bold gradient-text no-underline">MyBlog</a>
+      <div class="flex items-center gap-3">
+        <span class="text-sm text-gray-400 hidden sm:inline">管理后台</span>
+        <a href="/" class="nav-link text-sm"><i class="fas fa-home mr-1"></i> 前台</a>
+      </div>
+    </div>
+  </header>
+
+  <!-- 登录弹窗 -->
+  <div class="modal-overlay" id="loginModal">
+    <div class="modal-box">
+      <h2 class="text-xl font-bold mb-4">管理员登录</h2>
+      <div class="mb-4">
+        <label class="block text-sm font-medium mb-1">密码</label>
+        <input type="password" id="adminPassword" class="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-800" placeholder="请输入管理密码">
+      </div>
+      <div id="loginError" class="text-red-500 text-sm mb-3 hidden">密码错误，请重试</div>
+      <button onclick="adminLogin()" class="w-full bg-blue-500 hover:bg-blue-600 text-white py-2 rounded-lg font-medium transition">登录</button>
+    </div>
+  </div>
+
+  <!-- 管理后台主体 -->
+  <div class="flex">
+
+    <!-- 侧边栏 -->
+    <aside class="admin-sidebar p-4">
+      <nav class="space-y-1">
+        <a href="#" class="flex items-center gap-3 px-3 py-2 rounded-lg bg-blue-50 dark:bg-blue-900/20 text-blue-600 font-medium">
+          <i class="fas fa-file-alt"></i> 文章管理
+        </a>
+        <a href="/news-list.html" class="flex items-center gap-3 px-3 py-2 rounded-lg text-gray-600 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-700">
+          <i class="fas fa-newspaper"></i> 新闻浏览
+        </a>
+        <a href="/" class="flex items-center gap-3 px-3 py-2 rounded-lg text-gray-600 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-700">
+          <i class="fas fa-home"></i> 返回首页
+        </a>
+      </nav>
+      <div class="absolute bottom-4 left-4 right-4">
+        <button onclick="adminLogout()" class="w-full flex items-center gap-2 px-3 py-2 text-sm text-red-500 hover:bg-red-50 dark:hover:bg-red-900/20 rounded-lg transition">
+          <i class="fas fa-sign-out-alt"></i> 退出登录
+        </button>
+      </div>
+    </aside>
+
+    <!-- 主内容 -->
+    <main class="admin-main flex-1">
+      <div class="admin-header">
+        <h1 class="text-2xl font-bold">文章管理</h1>
+        <a href="/admin/edit.html" class="bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded-lg text-sm font-medium transition inline-flex items-center gap-2">
+          <i class="fas fa-plus"></i> 写文章
+        </a>
+      </div>
+
+      <div class="card">
+        <table class="w-full">
+          <thead>
+            <tr class="border-b border-gray-200 dark:border-gray-700 text-sm text-gray-500">
+              <th class="text-left py-3 px-4">标题</th>
+              <th class="text-left py-3 px-4 hidden md:table-cell">分类</th>
+              <th class="text-left py-3 px-4 hidden sm:table-cell">阅读</th>
+              <th class="text-left py-3 px-4 hidden sm:table-cell">时间</th>
+              <th class="text-right py-3 px-4">操作</th>
+            </tr>
+          </thead>
+          <tbody id="adminPostList">
+            <!-- JS 动态渲染 -->
+          </tbody>
+        </table>
+        <div id="adminPagination" class="pagination px-4 pb-4"></div>
+      </div>
+    </main>
+
+  </div>
+
+  <script src="/js/main.js"></script>
+  <script>
+    document.addEventListener('DOMContentLoaded', function () {
+      initTheme();
+      // 检查登录状态
+      const token = localStorage.getItem('admin_token');
+      if (token) {
+        fetch('/api/admin/check', { headers: { 'x-admin-token': token } })
+          .then(r => r.json())
+          .then(data => {
+            if (data.authenticated) {
+              document.getElementById('loginModal').classList.remove('show');
+              loadAdminPosts(1);
+            } else {
+              showLogin();
+            }
+          })
+          .catch(() => showLogin());
+      } else {
+        showLogin();
+      }
+    });
+
+    function showLogin() {
+      document.getElementById('loginModal').classList.add('show');
+    }
+
+    function adminLogin() {
+      const password = document.getElementById('adminPassword').value;
+      fetch('/api/admin/login', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ password })
+      })
+      .then(r => r.json())
+      .then(data => {
+        if (data.success) {
+          localStorage.setItem('admin_token', data.token);
+          document.getElementById('loginModal').classList.remove('show');
+          document.getElementById('loginError').classList.add('hidden');
+          loadAdminPosts(1);
+        } else {
+          document.getElementById('loginError').classList.remove('hidden');
+        }
+      })
+      .catch(() => {
+        document.getElementById('loginError').classList.remove('hidden');
+      });
+    }
+
+    function adminLogout() {
+      localStorage.removeItem('admin_token');
+      showLogin();
+    }
+
+    function loadAdminPosts(page) {
+      const tbody = document.getElementById('adminPostList');
+      tbody.innerHTML = '<tr><td colspan="5" class="text-center py-8"><div class="spinner"></div></td></tr>';
+
+      fetch(`/api/posts?page=${page}&size=20`)
+        .then(r => r.json())
+        .then(data => {
+          if (data.rows.length === 0) {
+            tbody.innerHTML = '<tr><td colspan="5" class="text-center py-8 text-gray-400">暂无文章</td></tr>';
+            document.getElementById('adminPagination').innerHTML = '';
+            return;
+          }
+          tbody.innerHTML = data.rows.map(post => `
+            <tr class="border-b border-gray-100 dark:border-gray-800 hover:bg-gray-50 dark:hover:bg-gray-800/50">
+              <td class="py-3 px-4">
+                <a href="/post.html?id=${post.id}" target="_blank" class="text-blue-600 dark:text-blue-400 hover:underline font-medium">${post.title}</a>
+              </td>
+              <td class="py-3 px-4 hidden md:table-cell">
+                ${post.category ? `<span class="category-tag">${post.category}</span>` : '-'}
+              </td>
+              <td class="py-3 px-4 hidden sm:table-cell text-gray-500 text-sm">${post.views}</td>
+              <td class="py-3 px-4 hidden sm:table-cell text-gray-500 text-sm">${formatDate(post.publish_time)}</td>
+              <td class="py-3 px-4 text-right">
+                <a href="/admin/edit.html?id=${post.id}" class="text-blue-500 hover:text-blue-700 mr-3"><i class="fas fa-edit"></i></a>
+                <button onclick="deletePost(${post.id})" class="text-red-500 hover:text-red-700"><i class="fas fa-trash"></i></button>
+              </td>
+            </tr>
+          `).join('');
+
+          // 分页
+          renderAdminPagination(data.totalPages, page);
+        })
+        .catch(() => {
+          tbody.innerHTML = '<tr><td colspan="5" class="text-center py-8 text-red-400">加载失败</td></tr>';
+        });
+    }
+
+    function renderAdminPagination(totalPages, current) {
+      const el = document.getElementById('adminPagination');
+      if (totalPages <= 1) { el.innerHTML = ''; return; }
+      let html = '';
+      html += `<button class="page-btn ${current <= 1 ? 'disabled' : ''}" onclick="loadAdminPosts(${current - 1})"><i class="fas fa-chevron-left"></i></button>`;
+      for (let i = 1; i <= totalPages; i++) {
+        html += `<button class="page-btn ${i === current ? 'active' : ''}" onclick="loadAdminPosts(${i})">${i}</button>`;
+      }
+      html += `<button class="page-btn ${current >= totalPages ? 'disabled' : ''}" onclick="loadAdminPosts(${current + 1})"><i class="fas fa-chevron-right"></i></button>`;
+      el.innerHTML = html;
+    }
+
+    function deletePost(id) {
+      if (!confirm('确定删除这篇文章吗？')) return;
+      const token = localStorage.getItem('admin_token');
+      fetch(`/api/posts/${id}`, {
+        method: 'DELETE',
+        headers: { 'x-admin-token': token },
+      })
+      .then(r => r.json())
+      .then(() => loadAdminPosts(1))
+      .catch(() => alert('删除失败'));
+    }
+  </script>
+</body>
+</html>

@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>我的博客 - 首页</title>
+  <!-- 固定浅色模式 -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+  <link rel="stylesheet" href="/css/style.css">
+</head>
+<body>
+
+  <!-- ===== 顶部统一导航 ===== -->
+  <header class="site-header">
+    <div class="max-w-6xl mx-auto px-4 h-full flex items-center justify-between">
+      <a href="/" class="text-xl font-bold gradient-text no-underline tracking-tight">MyBlog</a>
+      <nav class="hidden md:flex items-center gap-1">
+        <a href="/" class="nav-link active"><i class="fas fa-home mr-1.5"></i>首页</a>
+        <a href="/news-list.html" class="nav-link"><i class="fas fa-newspaper mr-1.5"></i>新闻</a>
+        <a href="/about.html" class="nav-link"><i class="fas fa-user mr-1.5"></i>关于</a>
+        <a href="/admin/posts.html" class="nav-link"><i class="fas fa-cog mr-1.5"></i>管理</a>
+      </nav>
+      <div class="flex items-center gap-3">
+        <button class="mobile-menu-btn md:hidden text-xl p-2 rounded-lg hover:bg-gray-100 transition">
+          <i class="fas fa-bars"></i>
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <!-- 移动端菜单 -->
+  <div class="mobile-menu" id="mobileMenu">
+    <a href="/"><i class="fas fa-home mr-2 w-5 text-center"></i>首页</a>
+    <a href="/news-list.html"><i class="fas fa-newspaper mr-2 w-5 text-center"></i>新闻</a>
+    <a href="/about.html"><i class="fas fa-user mr-2 w-5 text-center"></i>关于</a>
+    <a href="/admin/posts.html"><i class="fas fa-cog mr-2 w-5 text-center"></i>管理</a>
+  </div>
+
+  <!-- ===== 主内容区 ===== -->
+  <main class="max-w-6xl mx-auto px-4 py-6 md:py-8">
+
+    <!-- ── 头条新闻轮播 ── -->
+    <section class="mb-8 md:mb-10">
+      <div class="flex items-center justify-between mb-4">
+        <h2 class="text-lg md:text-xl font-bold flex items-center gap-2 text-gray-800">
+          <span class="w-1 h-5 bg-blue-500 rounded-full inline-block"></span>
+          头条新闻
+        </h2>
+        <a href="/news-list.html" class="text-sm text-blue-500 hover:text-blue-600 font-medium transition flex items-center gap-1">
+          更多 <i class="fas fa-arrow-right text-xs"></i>
+        </a>
+      </div>
+      <!-- 轮播容器 — JS 动态渲染 -->
+      <div id="carousel">
+        <div class="skeleton-carousel"></div>
+      </div>
+    </section>
+
+    <!-- ── 主内容 + 侧边栏 ── -->
+    <div class="flex flex-col lg:flex-row gap-6 md:gap-8">
+
+      <!-- 左侧：文章列表 -->
+      <div class="flex-1 min-w-0">
+
+        <div class="flex items-center justify-between mb-4 flex-wrap gap-3">
+          <h2 class="text-lg md:text-xl font-bold flex items-center gap-2 text-gray-800">
+            <span class="w-1 h-5 bg-blue-500 rounded-full inline-block"></span>
+            最新文章
+          </h2>
+          <div class="flex gap-2 flex-wrap text-sm" id="categoryNav">
+            <!-- JS 动态渲染分类标签 -->
+          </div>
+        </div>
+
+        <div id="postsContainer">
+          <!-- 骨架屏占位 -->
+          <div class="skeleton-posts">
+            <div class="skeleton-card"><div class="skeleton-img"></div><div class="skeleton-body"><div class="skeleton-line w-3/4"></div><div class="skeleton-line w-1/2"></div><div class="skeleton-line w-full"></div><div class="skeleton-line w-5/6"></div></div></div>
+            <div class="skeleton-card"><div class="skeleton-img"></div><div class="skeleton-body"><div class="skeleton-line w-3/4"></div><div class="skeleton-line w-1/2"></div><div class="skeleton-line w-full"></div><div class="skeleton-line w-5/6"></div></div></div>
+            <div class="skeleton-card"><div class="skeleton-img"></div><div class="skeleton-body"><div class="skeleton-line w-3/4"></div><div class="skeleton-line w-1/2"></div><div class="skeleton-line w-full"></div><div class="skeleton-line w-5/6"></div></div></div>
+          </div>
+        </div>
+
+        <div id="pagination"></div>
+      </div>
+
+      <!-- 右侧：今日热点 -->
+      <aside class="w-full lg:w-80 shrink-0">
+        <div class="card p-4 md:p-5 sticky top-20">
+          <h3 class="font-bold text-base md:text-lg mb-4 flex items-center gap-2 text-gray-800">
+            <span class="w-1 h-4 bg-red-500 rounded-full inline-block"></span>
+            今日热点
+          </h3>
+          <div id="sidebarNews">
+            <!-- 骨架屏 -->
+            <div class="skeleton-sidebar">
+              <div class="skeleton-line w-full"></div>
+              <div class="skeleton-line w-5/6"></div>
+              <div class="skeleton-line w-full"></div>
+              <div class="skeleton-line w-4/5"></div>
+              <div class="skeleton-line w-full"></div>
+            </div>
+          </div>
+          <a href="/news-list.html" class="block text-center text-sm text-blue-500 hover:text-blue-600 font-medium mt-4 pt-4 border-t border-gray-100 transition">
+            查看全部新闻 <i class="fas fa-arrow-right ml-1 text-xs"></i>
+          </a>
+        </div>
+      </aside>
+
+    </div>
+  </main>
+
+  <!-- ===== 页脚 ===== -->
+  <footer class="site-footer">
+    <div class="max-w-6xl mx-auto px-4">
+      <p class="text-sm">&copy; 2024 MyBlog. Built with <span class="text-red-500">❤</span> using Spring Boot + JPA + SQLite</p>
+    </div>
+  </footer>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/marked/9.1.6/marked.min.js"></script>
+  <script src="/js/main.js"></script>
+  <script>
+    document.addEventListener('DOMContentLoaded', function() {
+      initTheme();
+      initMobileMenu();
+      initCarousel();
+      loadCategories();
+      loadPosts();
+      initSidebarNews();
+    });
+  </script>
+</body>
+</html>

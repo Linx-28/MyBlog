@@ -1,0 +1,221 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>编辑文章 - 管理后台</title>
+  <!-- 固定浅色模式 -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/github-dark.min.css">
+  <link rel="stylesheet" href="/css/style.css">
+</head>
+<body>
+
+  <!-- 顶部导航 -->
+  <header class="site-header">
+    <div class="max-w-6xl mx-auto px-4 h-full flex items-center justify-between">
+      <a href="/" class="text-xl font-bold gradient-text no-underline">MyBlog</a>
+      <div class="flex items-center gap-3">
+        <span class="text-sm text-gray-400 hidden sm:inline">编辑文章</span>
+        <a href="/admin/posts.html" class="nav-link text-sm"><i class="fas fa-arrow-left mr-1"></i> 返回</a>
+        <a href="/" class="nav-link text-sm"><i class="fas fa-home mr-1"></i> 前台</a>
+      </div>
+    </div>
+  </header>
+
+  <!-- 主内容区 -->
+  <main class="max-w-6xl mx-auto px-4 py-6">
+
+    <div class="admin-header">
+      <h1 class="text-2xl font-bold" id="pageTitle">写文章</h1>
+      <div class="flex gap-2">
+        <button onclick="savePost()" class="bg-blue-500 hover:bg-blue-600 text-white px-6 py-2 rounded-lg text-sm font-medium transition inline-flex items-center gap-2">
+          <i class="fas fa-save"></i> 保存
+        </button>
+        <button onclick="previewPost()" class="bg-blue-500 hover:bg-blue-600 text-white px-6 py-2 rounded-lg text-sm font-medium transition inline-flex items-center gap-2">
+          <i class="fas fa-eye"></i> 预览
+        </button>
+      </div>
+    </div>
+
+    <!-- 文章基本信息 -->
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-4">
+      <div class="md:col-span-2">
+        <label class="block text-sm font-medium mb-1">标题</label>
+        <input type="text" id="postTitle" class="w-full px-3 py-2 border-2 border-gray-700 rounded-lg bg-white text-lg font-medium focus:border-blue-500 focus:outline-none transition" placeholder="文章标题">
+      </div>
+      <div>
+        <label class="block text-sm font-medium mb-1">分类</label>
+        <input type="text" id="postCategory" class="w-full px-3 py-2 border-2 border-gray-700 rounded-lg bg-white focus:border-blue-500 focus:outline-none transition" placeholder="如: 技术 / 生活">
+      </div>
+    </div>
+
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
+      <div>
+        <label class="block text-sm font-medium mb-1">标签 (逗号分隔)</label>
+        <input type="text" id="postTags" class="w-full px-3 py-2 border-2 border-gray-700 rounded-lg bg-white focus:border-blue-500 focus:outline-none transition" placeholder="JavaScript, Node.js, 教程">
+      </div>
+      <div>
+        <label class="block text-sm font-medium mb-1">封面图 URL</label>
+        <input type="text" id="postImage" class="w-full px-3 py-2 border-2 border-gray-700 rounded-lg bg-white focus:border-blue-500 focus:outline-none transition" placeholder="https://example.com/image.jpg">
+      </div>
+    </div>
+
+    <div class="mb-4">
+      <label class="block text-sm font-medium mb-1">摘要</label>
+      <input type="text" id="postSummary" class="w-full px-3 py-2 border-2 border-gray-700 rounded-lg bg-white focus:border-blue-500 focus:outline-none transition" placeholder="文章摘要（可选）">
+    </div>
+
+    <!-- Markdown 编辑器 -->
+    <div class="editor-container">
+      <div>
+        <label class="block text-sm font-medium mb-1">Markdown 内容</label>
+        <textarea id="postContent" placeholder="在此编写 Markdown 内容...&#10;&#10;# 标题&#10;正文内容..."></textarea>
+      </div>
+      <div>
+        <label class="block text-sm font-medium mb-1">实时预览</label>
+        <div class="editor-preview article-content" id="livePreview">
+          <p class="text-gray-400 text-center mt-20">右侧输入内容即可实时预览</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- 保存提示 -->
+    <div id="saveTip" class="hidden fixed bottom-6 right-6 bg-green-500 text-white px-6 py-3 rounded-lg shadow-lg font-medium transition">
+      <i class="fas fa-check-circle mr-2"></i> 保存成功
+    </div>
+
+    <!-- 预览模态框 -->
+    <div class="modal-overlay" id="previewModal">
+      <div class="modal-box max-w-3xl" style="width:90vw;max-height:85vh;overflow-y:auto;">
+        <div class="flex justify-between items-center mb-4">
+          <h2 class="text-xl font-bold" id="previewTitle">预览</h2>
+          <button onclick="document.getElementById('previewModal').classList.remove('show')" class="text-2xl text-gray-400 hover:text-gray-600">&times;</button>
+        </div>
+        <div class="article-content" id="previewContent"></div>
+      </div>
+    </div>
+
+  </main>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/marked/9.1.6/marked.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
+  <script src="/js/main.js"></script>
+  <script>
+    // 配置 marked 高亮
+    marked.setOptions({
+      highlight: function(code, lang) {
+        if (lang && hljs.getLanguage(lang)) {
+          try { return hljs.highlight(code, { language: lang }).value; } catch (e) {}
+        }
+        try { return hljs.highlightAuto(code).value; } catch (e) {}
+        return code;
+      },
+      breaks: true,
+      gfm: true
+    });
+
+    let editingId = null;
+
+    document.addEventListener('DOMContentLoaded', function() {
+      initTheme();
+
+      // 实时预览
+      document.getElementById('postContent').addEventListener('input', function() {
+        const html = marked.parse(this.value || '');
+        document.getElementById('livePreview').innerHTML = html;
+        document.querySelectorAll('#livePreview pre code').forEach((block) => {
+          hljs.highlightElement(block);
+        });
+      });
+
+      // 检查是否是编辑模式
+      const params = new URLSearchParams(window.location.search);
+      const id = params.get('id');
+      if (id) {
+        editingId = parseInt(id);
+        document.getElementById('pageTitle').textContent = '编辑文章';
+        loadPostForEdit(editingId);
+      }
+    });
+
+    function loadPostForEdit(id) {
+      fetch(`/api/posts/${id}`)
+        .then(r => r.json())
+        .then(post => {
+          document.getElementById('postTitle').value = post.title;
+          document.getElementById('postCategory').value = post.category || '';
+          document.getElementById('postTags').value = post.tags || '';
+          document.getElementById('postImage').value = post.image_url || '';
+          document.getElementById('postSummary').value = post.summary || '';
+          document.getElementById('postContent').value = post.content;
+
+          // 触发预览更新
+          const event = new Event('input');
+          document.getElementById('postContent').dispatchEvent(event);
+        })
+        .catch(() => alert('加载文章失败'));
+    }
+
+    function savePost() {
+      const title = document.getElementById('postTitle').value.trim();
+      const content = document.getElementById('postContent').value.trim();
+
+      if (!title) { alert('请输入文章标题'); return; }
+      if (!content) { alert('请输入文章内容'); return; }
+
+      const data = {
+        title,
+        content,
+        category: document.getElementById('postCategory').value.trim(),
+        tags: document.getElementById('postTags').value.trim(),
+        image_url: document.getElementById('postImage').value.trim(),
+        summary: document.getElementById('postSummary').value.trim(),
+      };
+
+      const token = localStorage.getItem('admin_token');
+      const headers = {
+        'Content-Type': 'application/json',
+        'x-admin-token': token,
+      };
+
+      const url = editingId ? `/api/posts/${editingId}` : '/api/posts';
+      const method = editingId ? 'PUT' : 'POST';
+
+      fetch(url, { method, headers, body: JSON.stringify(data) })
+        .then(r => r.json())
+        .then(result => {
+          if (result.error) {
+            alert(result.error);
+            return;
+          }
+          // 显示保存成功提示
+          const tip = document.getElementById('saveTip');
+          tip.classList.remove('hidden');
+          setTimeout(() => tip.classList.add('hidden'), 3000);
+
+          if (!editingId) {
+            editingId = result.id;
+            document.getElementById('pageTitle').textContent = '编辑文章';
+            window.history.replaceState(null, '', `/admin/edit.html?id=${result.id}`);
+          }
+        })
+        .catch(() => alert('保存失败'));
+    }
+
+    function previewPost() {
+      const title = document.getElementById('postTitle').value.trim() || '（无标题）';
+      const content = document.getElementById('postContent').value.trim() || '*（无内容）*';
+
+      document.getElementById('previewTitle').textContent = title;
+      const html = marked.parse(content);
+      document.getElementById('previewContent').innerHTML = html;
+      document.querySelectorAll('#previewContent pre code').forEach((block) => {
+        hljs.highlightElement(block);
+      });
+      document.getElementById('previewModal').classList.add('show');
+    }
+  </script>
+</body>
+</html>
